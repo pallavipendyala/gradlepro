@@ -18,7 +18,7 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
-apply plugin: 'org.sonarqube' version '2.8'
+apply plugin: 'org.sonarqube'
 
 mainClassName = 'hello.HelloWorld'
 
