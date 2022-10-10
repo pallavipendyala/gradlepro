@@ -19,11 +19,10 @@ jobs:
             ls -a
             cd build/libs
             ls -a
-      - name: publish to artifactory
-        uses: advancedcsg-open/action-jfrog-cli@master
-        with:
-          url: 'https://sesa.jfrog.io/'
-          credentials type: 'apikey'
-          apikey: ${{ secrets.API_KEY }}
-          args: u "build/libs/*" "/mu/repo/path/" --recursive=true --build-name=mygradleapp
-          
+      - uses: jfrog/setup-jfrog-cli@v2
+        env:
+        # JFrog platform url (for example: https://acme.jfrog.io) 
+          JF_URL: ${{ secrets.JF_URL }}
+          JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
+      - run: |
+          jf rt ping
