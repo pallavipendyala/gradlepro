@@ -17,5 +17,10 @@ jobs:
       - name: listing folder
         run: |
             ls -a
-            cd build 
+            cd build/classes
             ls -a
+      - name: listing
+        run: |
+             cd gradle
+             ls -a
+          
