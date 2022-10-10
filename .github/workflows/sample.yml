@@ -28,7 +28,7 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
       
       - name: Build and analyze
-        run: ./gradlew build sonarqube --info
+        run: ./gradlew sonarqube
         env:
           # Needed to get some information about the pull request, if any
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
