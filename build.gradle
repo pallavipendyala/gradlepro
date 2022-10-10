@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
+apply plugin: 'org.sonarqube' version '2.8'
 
 mainClassName = 'hello.HelloWorld'
 
@@ -24,6 +25,13 @@ targetCompatibility = 1.8
 dependencies {
     implementation "joda-time:joda-time:2.2"
     testImplementation "junit:junit:4.12"
+}
+sonarqube {
+  properties {
+    property 'sonar.host.url', 'https://sonarcloud.io'
+    property 'sonar.organization', 'pallavipendyala'
+    property 'sonar.projectKey', 'pallavipendyala_gradlepro'
+  }
 }
 // end::dependencies[]
 
