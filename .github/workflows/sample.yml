@@ -26,3 +26,4 @@ jobs:
           JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
       - run: |
           jf rt ping 
+          jf rt u "build/libs/*" example-repo-local/artifacts/
