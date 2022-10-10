@@ -14,11 +14,13 @@ buildscript {
     }
 }
 
-
+plugins {
+    id "org.sonarqube" version "2.5"
+}
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
-apply plugin: 'org.sonarqube'
+
 
 mainClassName = 'hello.HelloWorld'
 
@@ -45,6 +47,7 @@ dependencies {
 }
 sonarqube {
   properties {
+    property "sonar.exclusions", "**/*Generated.java"
     property 'sonar.host.url', 'https://sonarcloud.io'
     property 'sonar.organization', 'pallavipendyala'
     property 'sonar.projectKey', 'pallavipendyala_gradlepro'
