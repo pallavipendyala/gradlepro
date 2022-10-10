@@ -42,7 +42,7 @@ jobs:
         shell: pwsh
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"pallavipendyala_gradlepro" /o:"pallavipendyala" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reposrtPaths="coverage.opencover.xml" /d:sonar.cs.vstest.reportsPaths="TestResults\*.trx"
-          ./gradlew build
+          .\gradlew build
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
       - name: SonarQube Scan
         uses: sonarsource/sonarcloud-github-action@master
