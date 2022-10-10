@@ -12,6 +12,13 @@ jobs:
       
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
       
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
@@ -19,46 +26,30 @@ jobs:
           path: ~\sonar\cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-
-      - name: Cache SonarCloud scanner
-        id: cache-sonar-scanner
-        uses: actions/cache@v1
-        with:
-          path: .\.sonar\scanner
-          key: ${{ runner.os }}-sonar-scanner
-          restore-keys: ${{ runner.os }}-sonar-scanner
-
-      - name: Install SonarCloud scanner
-        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-        shell: pwsh
-        run: |
-          New-Item -Path .\.sonar\scanner -ItemType Directory
-          dotnet tool update dotnet-sonarscanner --tool-path .sonar/scanner
-
+      
       - name: Build and analyze
+        run: ./gradlew build jacocoTestReport sonarqube --info
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          # Needed to get some information about the pull request, if any
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # SonarCloud access token should be generated from https://sonarcloud.io/account/security/
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        shell: pwsh
-        run: |
-          .\.sonar\scanner\gradle-sonarscanner begin /k:"pallavipendyala_gradlepro" /o:"pallavipendyala" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reposrtPaths="coverage.opencover.xml" /d:sonar.cs.vstest.reportsPaths="TestResults\*.trx"
-          .\gradlew build
-          .\.sonar\scanner\gradle-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
-      - name: SonarQube Scan
-        uses: sonarsource/sonarcloud-github-action@master
-        with:
-          args: >
-            -Dsonar.organization=pallavipendyala
-            -Dsonar.projectKey=pallavipendyala_gradlepro
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      - name: SonarQube Quality Gate check
-        id: sonarqube-quality-gate-check
-        uses: sonarsource/sonarqube-quality-gate-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      # - name: SonarQube Scan
+      #   uses: sonarsource/sonarcloud-github-action@master
+      #   with:
+      #     args: >
+      #       -Dsonar.organization=pallavipendyala
+      #       -Dsonar.projectKey=pallavipendyala_gradlepro
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      # - name: SonarQube Quality Gate check
+      #   id: sonarqube-quality-gate-check
+      #   uses: sonarsource/sonarqube-quality-gate-action@master
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
 
       - uses: jfrog/setup-jfrog-cli@v2
