@@ -28,6 +28,7 @@ dependencies {
 }
 sonarqube {
   properties {
+    property "sonar.exclusions", "**/*Generated.java"
     property 'sonar.host.url', 'https://sonarcloud.io'
     property 'sonar.organization', 'pallavipendyala'
     property 'sonar.projectKey', 'pallavipendyala_gradlepro'
