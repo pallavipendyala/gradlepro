@@ -19,8 +19,11 @@ jobs:
             ls -a
             cd build/libs
             ls -a
-      - name: listing
-        run: |
-             cd gradle
-             ls -a
+      - name: publish to artifactory
+        uses: advancedcsg-open/action-jfrog-cli@master
+        with:
+          url: 'https://sesa.jfrog.io/'
+          credentials type: 'apikey'
+          apikey: ${{ secrets.API_KEY }}
+          args: u "build/libs/*" "/mu/repo/path/" --recursive=true --build-name=mygradleapp
           
