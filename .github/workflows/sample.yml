@@ -15,4 +15,7 @@ jobs:
       - name: Execute Gradle build
         run: ./gradlew build
       - name: listing folder
-        run: ls -a
+        run: |
+            ls -a
+            cd build 
+            ls -a
