@@ -9,21 +9,64 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
+      
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-    
-      - name: Execute Gradle build
-        run: ./gradlew build
-      - name: listing folder
+      
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~\sonar\cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache SonarCloud scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@v1
+        with:
+          path: .\.sonar\scanner
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
+
+      - name: Install SonarCloud scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        shell: pwsh
         run: |
-            ls -a
-            cd build/libs
-            ls -a
+          New-Item -Path .\.sonar\scanner -ItemType Directory
+          dotnet tool update dotnet-sonarscanner --tool-path .sonar/scanner
+
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        shell: pwsh
+        run: |
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"pallavipendyala_gradlepro" /o:"pallavipendyala" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reposrtPaths="coverage.opencover.xml" /d:sonar.cs.vstest.reportsPaths="TestResults\*.trx"
+          ./gradlew build
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+      - name: SonarQube Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+          args: >
+            -Dsonar.organization=pallavipendyala
+            -Dsonar.projectKey=pallavipendyala_gradlepro
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - name: SonarQube Quality Gate check
+        id: sonarqube-quality-gate-check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+
       - uses: jfrog/setup-jfrog-cli@v2
         env:
         # JFrog platform url (for example: https://acme.jfrog.io) 
           JF_URL: ${{ secrets.JF_URL }}
           JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
+      
       - run: |
           jf rt ping 
           jf rt u "build/libs/*" example-repo-local/artifacts/
