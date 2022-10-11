@@ -13,5 +13,10 @@ jobs:
         cache: gradle
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew sonarqube -Dsonar.projectKey=pallavipendyala_gradlepro -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+    - name: Analyze with SonarCloud
+      uses: sonarsource/sonarcloud-github-action@master
+      with:
+        projectBaseDir: my-custom-directory
+        args: >
+          -Dsonar.organization=my-organization
+          -Dsonar.projectKey=my-projectkey
