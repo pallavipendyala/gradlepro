@@ -25,7 +25,7 @@ jobs:
             ./gradlew build
             ls -a 
             ls -a src/main/java/
-            find src/ -name **/*.class
+            find . -name "HelloWorld.class"
     - name: sonar scan
       uses: sonarsource/sonarqube-scan-action@master
       env:
