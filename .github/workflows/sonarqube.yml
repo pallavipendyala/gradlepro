@@ -24,7 +24,7 @@ jobs:
             chmod +x gradlew
             ./gradlew build
             ls -a 
-            ls -a /src/main/
+            ls -a src/main/
             find /src -name **/*.class
     - name: sonar scan
       uses: sonarsource/sonarqube-scan-action@master
