@@ -33,3 +33,9 @@ jobs:
           -Dsonar.organization=pallavipendyala
           -Dsonar.projectKey=pallavipendyala_gradlepro
           -Dsonar.java.binaries=build/classes/
+    - name: SonarQube Quality Gate check
+      id: sonarqube-quality-gate-check
+      uses: sonarsource/sonarqube-quality-gate-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
