@@ -23,9 +23,6 @@ jobs:
       run: |
             chmod +x gradlew
             ./gradlew build
-            ls -a 
-            ls -a src/main/java/
-            find . -name "HelloWorld.class"
     - name: sonar scan
       uses: sonarsource/sonarqube-scan-action@master
       env:
@@ -35,3 +32,4 @@ jobs:
         args: >
           -Dsonar.organization=pallavipendyala
           -Dsonar.projectKey=pallavipendyala_gradlepro
+          -Dsonar.java.binaries=build/classes/
