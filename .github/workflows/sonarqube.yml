@@ -11,14 +11,6 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
         cache: gradle
-    - name: Cache Maven packages
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.m2
-          ~/.sonar/cache
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml', '**/*.yml') }}
-        restore-keys: ${{ runner.os }}-m2-
     - name: Grant execute permission for gradlew
       run: |
             chmod +x gradlew
@@ -48,4 +40,6 @@ jobs:
       
     - run: |
           jf rt ping 
-          jf rt u "build/libs/*" example-repo-local/artifacts/
+          jf rt u "build/libs/(*.jar)" example-repo-local/artifacts
+
+
