@@ -36,7 +36,7 @@ jobs:
     - name: Package Code + Dependencies
       run: scancentral package $PACKAGE_OPTS -o package.zip
       env:
-        PACKAGE_OPTS: "-bt gradle build"
+        PACKAGE_OPTS: "-bc gradle build"
     - uses: jfrog/setup-jfrog-cli@v2
       env:
         # JFrog platform url (for example: https://acme.jfrog.io) 
