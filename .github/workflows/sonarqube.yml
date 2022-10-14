@@ -31,7 +31,12 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-    
+    - name: Download Fortify ScanCentral Client
+        uses: fortify/gha-setup-scancentral-client@v1
+    - name: Package Code + Dependencies
+        run: scancentral package $PACKAGE_OPTS -o package.zip
+        env:
+          PACKAGE_OPTS: "-bt gradle"
     - uses: jfrog/setup-jfrog-cli@v2
       env:
         # JFrog platform url (for example: https://acme.jfrog.io) 
