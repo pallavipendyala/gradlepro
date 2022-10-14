@@ -40,6 +40,6 @@ jobs:
       
     - run: |
           jf rt ping 
-          jf rt u "build/libs/(*.jar)" example-repo-local/{1}.jar --sync-deletes="example-repo-local/artifacts"
+          jf rt u "build/libs/(*.jar)" example-repo-local/{1} --sync-deletes="example-repo-local/"
 
 
