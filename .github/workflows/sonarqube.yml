@@ -34,7 +34,7 @@ jobs:
     - name: Download Fortify ScanCentral Client
       uses: fortify/gha-setup-scancentral-client@v1
     - name: Package Code + Dependencies
-      run: scancentral package $PACKAGE_OPTS -o package.zip
+      run: scancentral $PACKAGE_OPTS package -o package.zip
       env:
         PACKAGE_OPTS: "-bc gradle build"
     - uses: jfrog/setup-jfrog-cli@v2
