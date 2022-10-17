@@ -31,6 +31,28 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+    - name: Download Fortify ScanCentral Client
+      uses: fortify/gha-setup-scancentral-client@v1
+    - name: Package Code + Dependencies
+      run: scancentral package $PACKAGE_OPTS -o package.zip
+      env:
+        PACKAGE_OPTS: "-bt gradle"
+      
+      # Start Fortify on Demand SAST scan. Be sure to set secrets/variables for your desired configuration.
+    - name: Download Fortify on Demand Universal CI Tool
+      uses: fortify/gha-setup-fod-uploader@v1
+    - name: Perform SAST Scan
+      run: java -jar $FOD_UPLOAD_JAR -z package.zip -aurl $FOD_API_URL -purl $FOD_URL -rid "$FOD_RELEASE_ID" -tc "$FOD_TENANT" -uc "$FOD_USER" "$FOD_PAT" $FOD_UPLOADER_OPTS -n "$FOD_UPLOADER_NOTES"
+      env: 
+        FOD_TENANT: ${{ secrets.FOD_TENANT }}  
+        FOD_USER: ${{ secrets.FOD_USER }}
+        FOD_PAT: ${{ secrets.FOD_PAT }}
+        FOD_RELEASE_ID: ${{ secrets.FOD_RELEASE_ID }}
+        FOD_URL: "https://ams.fortify.com/"
+        FOD_API_URL: "https://api.ams.fortify.com/"
+        FOD_UPLOADER_OPTS: "-ep 2 -pp 0"
+        FOD_UPLOADER_NOTES: 'Triggered by GitHub Actions (${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})'
     - uses: jfrog/setup-jfrog-cli@v2
       env:
         # JFrog platform url (for example: https://acme.jfrog.io) 
