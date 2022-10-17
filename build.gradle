@@ -15,6 +15,11 @@ repositories {
 jar {
     archiveBaseName = 'gs-gradle'
     archiveVersion =  '0.1.0'
+    manifest {
+        attributes (
+                'Main-Class': 'hello.HelloWorld'
+        )
+    }
 }
 // end::jar[]
 
