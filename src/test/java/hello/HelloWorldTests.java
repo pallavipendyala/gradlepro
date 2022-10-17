@@ -20,12 +20,12 @@ public class HelloWorldTests {
 		System.setOut(ps);
 	}
 
-	@Test
+	/*@Test
 	public void shouldPrintTimeToConsole() {
 		HelloWorld.main(new String[] { });
 
 		assertThat(output(), containsString("The current local time is"));
-	}
+	}*/
 
 	@Test
 	public void shouldPrintHelloWorldToConsole() {
